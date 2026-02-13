@@ -1,9 +1,12 @@
 import type { Context, Next } from "hono";
 import { getCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
-import "dotenv/config";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
 
 if (!JWT_SECRET) {
   throw new Error("JWT_SECRET is not defined in environment variables");
