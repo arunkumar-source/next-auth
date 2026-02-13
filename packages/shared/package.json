@@ -1,0 +1,20 @@
+{
+  "name": "@repo/shared",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.ts"
+  },
+  "scripts": {
+
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}
