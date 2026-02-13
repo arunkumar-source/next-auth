@@ -3,7 +3,7 @@ import { getCookie } from "hono/cookie";
 import { verify } from "hono/jwt";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({path: "./.env" });
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
