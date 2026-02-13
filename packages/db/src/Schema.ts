@@ -6,6 +6,7 @@ export const workStatusDB = pgEnum("work_status", [ "backlog", "todo", "in-progr
 // Work table with description and endDate fields
 export const workDB = pgTable("nextjs_work", {
        id: text("id").primaryKey(),
+       usersId: uuid("usersId").references(() => users.id, { onDelete: "cascade" }).notNull(),
        title: text("title").notNull(),
        description: text("description"),
        status: workStatusDB("status").notNull().default("todo"),

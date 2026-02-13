@@ -16,7 +16,11 @@ import { Variables } from "hono/types";
 //middleware
 import { authMiddleware } from "./auth";
 
-const app = new Hono<{ Variables: Variables }>().basePath("/api");
+interface AppVariables extends Variables {
+  userId: string;
+}
+
+const app = new Hono<{ Variables: AppVariables }>().basePath("/api");
 
 app.options("*", (c) => {
   return c.body(null, 204);
@@ -29,13 +33,10 @@ app.post("/register", async (c) => {
   const { email, password } = await c.req.json();
   try {
     if (!email || !password) return c.json({ message: "Invalid data" }, 400);
-    await db
-      .select()
-      .from(schema.users)
-      .where(eq(schema.users.email, email))
-      .then((res) => {
-        if (res.length > 0) throw new Error("User already exists");
-      });
+    await db.select().from(schema.users).where(eq(schema.users.email, email)).then((users) => {
+      if (users.length > 0) {
+        throw new Error("User already exists");
+      }});
 
     const hashpassword = await bcrypt.hash(password, 10);
 
@@ -120,17 +121,23 @@ app.post("/logout", (c) => {
 });
 
 app.get("/", authMiddleware, async (c) => {
-  const works = await db.select().from(schema.workDB);
+  const userId = c.get("userId");
+  if (!userId) {
+    return c.json({ message: "Unauthorized - No user ID in context" }, 401);
+  }
+  const works = await db.select().from(schema.workDB).where(eq(schema.workDB.usersId, userId));
   return c.json(works);
 });
 
 app.post("/add", authMiddleware, async (c) => {
   const { title, status, description, endDate } = await c.req.json();
+  const userId = c.get("userId");
   if (!title || !status) return c.json({ message: "Invalid data" }, 400);
 
   const work = {
     id: crypto.randomUUID(),
     title,
+    usersId: userId,
     status,
     description: description || null,
     endDate: endDate ? new Date(endDate) : null,

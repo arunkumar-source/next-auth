@@ -22,9 +22,8 @@ export const authMiddleware = async (c: Context, next: Next) => {
     }
 
     const payload = await verify(token, JWT_SECRET,"HS256");
+    c.set("userId", payload.sub); // Store user ID in context for later use
 
-    // Attach user data to context
-    c.set("user", payload);
 
     await next();
   } catch (error) {
