@@ -5,7 +5,11 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**", "api/**"]
+      "outputs": [".next/**", "!.next/cache/**", "api/**"],
+      "env": [
+        "DATABASE_URL",
+        "JWT_SECRET"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
